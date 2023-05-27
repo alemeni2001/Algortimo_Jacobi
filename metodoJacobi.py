@@ -1,14 +1,24 @@
 # Importamos libreria numpy
 import numpy as np
 
-print ("Metodo Jacobi que resuelve ecuaciones lineales")
+print ("Metodo Jacobi que resuelve ecuaciones lineales con una matriz de N X N")
 
-# Creamos una matriz A con distintos elementos, un vector B y un vector x0 lleno de numeros 0
-A = np.array([[4, 1, -1],
-              [2, 7, 1],
-              [1, -3, 12]])
+# Pedir al usuario la dimensión del sistema de ecuaciones
+n = int(input("Ingrese la dimensión del sistema de ecuaciones: "))
 
-B = np.array([3, 2, 13])
+# Pedir al usuario los elementos de la matriz A
+
+A = np.zeros((n, n))
+for i in range(n):
+    for j in range(n):
+        A[i, j] = float(input(f"Ingrese el elemento A[{i}][{j}]: "))
+
+# Pedir al usuario los elementos del vector B
+
+B = np.zeros(n)
+for i in range(n):
+    B[i] = float(input(f"Ingrese el elemento b[{i}]: "))
+
 
 x0 = x0 = np.zeros_like(B)
 
