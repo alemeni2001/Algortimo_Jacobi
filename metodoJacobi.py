@@ -1,36 +1,50 @@
 # Importamos libreria numpy
 import numpy as np
 
+print ("Metodo Jacobi que resuelve ecuaciones lineales")
 
-# Funcion que realiza el algoritmo de Jacobi y retorna la solucion
-def jacobi(A, b, x0, max_iterations=100, tolerance=1e-6):
-    n = len(A)
-    x = x0.copy()
-    x_prev = x0.copy()
-
-    for iteration in range(max_iterations):
-        for i in range(n):
-            sum_term = np.dot(A[i, :i], x_prev[:i]) + np.dot(A[i, i+1:], x_prev[i+1:])
-            x[i] = (b[i] - sum_term) / A[i, i]
-
-        if np.linalg.norm(x - x_prev) < tolerance:
-            return x
-
-        x_prev = x.copy()
-
-    return x
-
-# Ejemplo de uso, creamos una matriz A con distintos elementos, un vector B y un vector x0 lleno de numeros 0
+# Creamos una matriz A con distintos elementos, un vector B y un vector x0 lleno de numeros 0
 A = np.array([[4, 1, -1],
               [2, 7, 1],
               [1, -3, 12]])
 
-b = np.array([3, 2, 13])
+B = np.array([3, 2, 13])
 
-x0 = np.array([0, 0, 0])
+x0 = x0 = np.zeros_like(B)
 
-# Pasamos por parametro las variables
-solution = jacobi(A, b, x0)
+
+# A = matriz, B = vector independiente x0 = vector inicial para el metodo de Jacobi
+# tol = tolerancia para determinar convergencia de metodo, max_iter = Número máximo de iteraciones permitidas 
+def jacobi(A, B, x0, tol=1e-6, max_iter=100):
+    # Se determina el tamaño del vector para que este sea recorrido en el ciclo for
+    n = len(B)
+    # Se copia el vector para asi poder mantener el vector inicial sin modificar en el proceso iterativo
+    x = x0.copy()
+    x_copy = np.zeros_like(x)
+
+    for m in range(max_iter):
+        for i in range(n):
+
+            sum_term = 0
+            for j in range(n):
+                if j != i:
+                    sum_term += A[i, j] * x[j]
+            # Se calcula el nuevo valor de la variable dividiendo la diferencia entre b[i] (el término independiente) y sum_term entre A[i, i] (el coeficiente diagonal)
+            x_copy[i] = (B[i] - sum_term) / A[i, i]
+        
+        # Se calcula la norma del vector de corrección x_new - x. Si esta norma es menor que la tolerancia, se considera que el método ha convergido
+        # caso contrario devuelve el mensaje
+        if np.linalg.norm(x_copy - x) < tol:
+            return x_copy
+        
+        x = x_copy.copy()
+    
+    print("El método de Jacobi no converge después de", max_iter, "iteraciones.")
+    return x
+
+
+# Pasamos por parametro las variables para que opere la solucion
+solution = jacobi(A, B, x0)
 
 # Imprimimos por pantalla la solucion
 print("Solución:", solution)
