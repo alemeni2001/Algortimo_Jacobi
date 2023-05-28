@@ -95,8 +95,8 @@ def jacobi(A, B, x0, tol, exactitud,max_iter=100):
 def grafico(solution):
         # Muestra el grafico de la solucion por pantalla
         plt.plot(solution)
-        plt.xlabel('Variable')
-        plt.ylabel('Valor')
+        plt.xlabel('Componentes de un vector')
+        plt.ylabel('Solucion')
         plt.title('Solución del sistema de ecuaciones')
         plt.grid(True)
         plt.show()
