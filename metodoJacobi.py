@@ -1,5 +1,6 @@
 # Importamos libreria numpy
 import numpy as np
+import matplotlib.pyplot as plt
 import os
 
 def limpiarConsola():
@@ -44,17 +45,17 @@ def datosJacobi():
     # Pedir al usuario la cantidad de decimales correctos
     #rango de exactitud de decimales posible
     RANGO_TOLERABLE = range(1,11)
-    exactitud = int(input(f"ingrese la cantidad de deicmales correctos que desea dentro del rango ({RANGO_TOLERABLE.start}..{RANGO_TOLERABLE.stop-1}): "))
+    exactitud = int(input(f"ingrese la cantidad de decimales correctos que desea dentro del rango ({RANGO_TOLERABLE.start}..{RANGO_TOLERABLE.stop-1}): "))
     #verificar que la exactitud ingresada por el usuario sea correcta 
     while (not(exactitud in RANGO_TOLERABLE)):    
-        exactitud = int(input(f"ingrese la cantidad de deicmales correctos que desea en el dentro del rango ({RANGO_TOLERABLE.start}..{RANGO_TOLERABLE.stop-1}): "))
+        exactitud = int(input(f"ingrese la cantidad de decimales correctos que desea en el dentro del rango ({RANGO_TOLERABLE.start}..{RANGO_TOLERABLE.stop-1}): "))
     #scamos el valor de paradad dada la exactitud
     tolerancia = "0."
     #agregamos tantos 0 como exactitud indicada
     for i in range(exactitud): tolerancia += "0"
     #agregamos un uno para indicar que es una fraccion
     tolerancia += "1"
-    #convertimos a flotante para poder operara
+    #convertimos a flotante para poder operar
     tolerancia = float(tolerancia)
 
     return (A,B,x0,tolerancia,exactitud)
@@ -87,20 +88,41 @@ def jacobi(A, B, x0, tol, exactitud,max_iter=100):
             return np.around(x_copy,exactitud)
         
         x = x_copy.copy()
-    
+
     print("El método de Jacobi no converge después de", max_iter, "iteraciones.")
     return x
+
+def grafico(solution):
+        # Muestra el grafico de la solucion por pantalla
+        plt.plot(solution)
+        plt.xlabel('Variable')
+        plt.ylabel('Valor')
+        plt.title('Solución del sistema de ecuaciones')
+        plt.grid(True)
+        plt.show()
 
 def main():
     presentacion()
     DATE = datosJacobi()
     limpiarConsola()
     presentacion()
+    solution = jacobi(*DATE)
+
     # Imprimimos por pantalla la solucion
+<<<<<<< HEAD
     print("para el sistema de ecuaciones lineal:\n")
     X = [f"x{i}" for i in range(DATE[1].shape[0])]
     print (DATE[0],"*",np.array(X),"=",DATE[1],"\n")
     print("la solucion aproximadad es:")
     print(np.array(X),":",jacobi(*DATE))
+=======
+    print("Para la ecuacuion lineal:\n")
+    print (DATE[0],"*",np.array(["x","y","z"]).transpose(),"=",DATE[1].transpose(),"\n")
+
+    print("Solucion:")
+    print(np.array(["x","y","z"]),":",solution)
+    grafico(solution)
+>>>>>>> 412394d5f1ab82be9d3d01ec845f987466eeb072
     
 main()
+
