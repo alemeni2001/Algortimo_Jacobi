@@ -109,20 +109,14 @@ def main():
     solution = jacobi(*DATE)
 
     # Imprimimos por pantalla la solucion
-<<<<<<< HEAD
     print("para el sistema de ecuaciones lineal:\n")
     X = [f"x{i}" for i in range(DATE[1].shape[0])]
     print (DATE[0],"*",np.array(X),"=",DATE[1],"\n")
     print("la solucion aproximadad es:")
-    print(np.array(X),":",jacobi(*DATE))
-=======
-    print("Para la ecuacuion lineal:\n")
-    print (DATE[0],"*",np.array(["x","y","z"]).transpose(),"=",DATE[1].transpose(),"\n")
-
-    print("Solucion:")
-    print(np.array(["x","y","z"]),":",solution)
+    print(np.array(X),":",solution)    
+   
     grafico(solution)
->>>>>>> 412394d5f1ab82be9d3d01ec845f987466eeb072
+
     
 main()
 
