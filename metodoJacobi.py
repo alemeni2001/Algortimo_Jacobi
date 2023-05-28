@@ -97,9 +97,10 @@ def main():
     limpiarConsola()
     presentacion()
     # Imprimimos por pantalla la solucion
-    print("para la ecuacuion lineal:\n")
-    print (DATE[0],"*",np.array(["x","y","z"]).transpose(),"=",DATE[1].transpose(),"\n")
-    print("Solucion:")
-    print(np.array(["x","y","z"]),":",jacobi(*DATE))
+    print("para el sistema de ecuaciones lineal:\n")
+    X = [f"x{i}" for i in range(DATE[1].shape[0])]
+    print (DATE[0],"*",np.array(X),"=",DATE[1],"\n")
+    print("la solucion aproximadad es:")
+    print(np.array(X),":",jacobi(*DATE))
     
 main()
