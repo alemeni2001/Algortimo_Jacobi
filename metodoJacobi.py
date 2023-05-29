@@ -8,7 +8,7 @@ def limpiarConsola():
     if (os.name == "posix"):
         os.system("clear")
     elif (os.name == "nt"):
-        #limpar consola en winows
+        #limpar consola en windows
         os.system("cls")
 
 def presentacion():
@@ -31,14 +31,19 @@ def datosJacobi():
     for i in range(n):
         for j in range(n):
             A[i, j] = float(input(f"Ingrese el elemento A[{i}][{j}]: "))
+    
+    print("Esto es la matriz A")
+    print(A)        
 
     # Pedir al usuario los elementos del vector B
-    print("Ingrese la matirz B:")
+    print("\nIngrese la matirz B:")
     B = np.zeros(n)
     for i in range(n):
         B[i] = float(input(f"Ingrese el elemento b[{i}]: "))
 
-    #valores iniciales para el metodo
+    print("\nEste es el vector B")
+    print(B)
+    # Valores iniciales para el metodo
     x0 = np.zeros_like(B)
 
 
@@ -92,11 +97,15 @@ def jacobi(A, B, x0, tol, exactitud,max_iter=100):
     print("El método de Jacobi no converge después de", max_iter, "iteraciones.")
     return x
 
+def solucionExacta(A,B):
+    solution = np.linalg.solve(A, B)
+    return solution
+
 def grafico(solution):
         # Muestra el grafico de la solucion por pantalla
         plt.plot(solution)
-        plt.xlabel('Variable')
-        plt.ylabel('Valor')
+        plt.xlabel('Componentes de un vector')
+        plt.ylabel('Solucion')
         plt.title('Solución del sistema de ecuaciones')
         plt.grid(True)
         plt.show()
@@ -106,14 +115,19 @@ def main():
     DATE = datosJacobi()
     limpiarConsola()
     presentacion()
-    solution = jacobi(*DATE)
+    solution_jacobi = jacobi(*DATE)
+    solution_exacta = solucionExacta(*DATE[:2])
+
+    print("Solucion exacta utilizando metodo distinto:")
+    print(solution_exacta)
     # Imprimimos por pantalla la solucion
-    print("para el sistema de ecuaciones lineal:\n")
+    print("Para el sistema de ecuaciones lineal:\n")
     X = [f"x{i}" for i in range(DATE[1].shape[0])]
     print (DATE[0],"*",np.array(X),"=",DATE[1],"\n")
-    print("la solucion aproximadad es:")
-    print(np.array(X),":",solution)
-    grafico(solution)
+    print("La solucion aproximada con metodo Jacobi es:")
+    print(np.array(X),":",solution_jacobi)    
+   
+    grafico(solution_jacobi)
     
 main()
 
