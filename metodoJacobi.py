@@ -50,10 +50,10 @@ def datosJacobi():
     # Pedir al usuario la cantidad de decimales correctos
     #rango de exactitud de decimales posible
     RANGO_TOLERABLE = range(1,11)
-    exactitud = int(input(f"ingrese la cantidad de decimales correctos que desea dentro del rango ({RANGO_TOLERABLE.start}..{RANGO_TOLERABLE.stop-1}): "))
+    exactitud = int(input(f"ingrese la cantidad de decimales correctos que desea, (debe estar dentro del rango ({RANGO_TOLERABLE.start}..{RANGO_TOLERABLE.stop-1}): "))
     #verificar que la exactitud ingresada por el usuario sea correcta 
     while (not(exactitud in RANGO_TOLERABLE)):    
-        exactitud = int(input(f"ingrese la cantidad de decimales correctos que desea en el dentro del rango ({RANGO_TOLERABLE.start}..{RANGO_TOLERABLE.stop-1}): "))
+        exactitud = int(input(f"ingrese la cantidad de decimales correctos que desea, (debe estar dentro del rango ({RANGO_TOLERABLE.start}..{RANGO_TOLERABLE.stop-1}): "))
     #scamos el valor de paradad dada la exactitud
     tolerancia = "0."
     #agregamos tantos 0 como exactitud indicada
@@ -86,7 +86,9 @@ def jacobi(A, B, x0, tol, exactitud,max_iter=100):
                     sum_term += A[i, j] * x[j]
             # Se calcula el nuevo valor de la variable dividiendo la diferencia entre b[i] (el término independiente) y sum_term entre A[i, i] (el coeficiente diagonal)
             x_copy[i] = (B[i] - sum_term) / A[i, i]
-        
+            
+        print(f"paso {m+1} -------------- aproximacion actual = {x_copy}")
+
         # Se calcula la norma del vector de corrección x_new - x. Si esta norma es menor que la tolerancia, se considera que el método ha convergido
         # caso contrario devuelve el mensaje
         if np.linalg.norm(x_copy - x) < tol:
@@ -103,7 +105,7 @@ def solucionExacta(A,B):
 
 def grafico(solution):
         # Muestra el grafico de la solucion por pantalla
-        plt.plot(solution)
+        plt.scatter(np.arange(len(solution)),solution)
         plt.xlabel('Componentes de un vector')
         plt.ylabel('Solucion')
         plt.title('Solución del sistema de ecuaciones')
@@ -118,7 +120,7 @@ def main():
     solution_jacobi = jacobi(*DATE)
     solution_exacta = solucionExacta(*DATE[:2])
 
-    print("Solucion exacta utilizando metodo distinto:")
+    print("\n\nSolucion exacta utilizando metodo distinto:")
     print(solution_exacta)
     # Imprimimos por pantalla la solucion
     print("Para el sistema de ecuaciones lineal:\n")
