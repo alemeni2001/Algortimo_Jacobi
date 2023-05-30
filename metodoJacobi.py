@@ -108,7 +108,7 @@ def grafico(solution):
         plt.scatter(np.arange(len(solution)),solution)
         plt.xlabel('Componentes de un vector')
         plt.ylabel('Solucion')
-        plt.title('Solución del sistema de ecuaciones')
+        plt.title('puntos de la solucion en el plano')
         plt.grid(True)
         plt.show()
 
