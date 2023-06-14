@@ -32,6 +32,16 @@ def datosJacobi():
         for j in range(n):
             A[i, j] = float(input(f"Ingrese el elemento A[{i}][{j}]: "))
     
+    
+    while not validarMatriz(A):
+        print("\nLa matriz ingresada no cumple con las exigencias del algoritmo de Jacobi.")
+        print("Por favor, ingrese una matriz que sea diagonal dominante y no singular.")
+        print("Ingrese la matriz A:")
+        A = np.zeros((n, n))
+        for i in range(n):
+            for j in range(n):
+                A[i, j] = float(input(f"Ingrese el elemento A[{i}][{j}]: "))
+    
     print("Esto es la matriz A")
     print(A)        
 
@@ -65,6 +75,21 @@ def datosJacobi():
 
     return (A,B,x0,tolerancia,exactitud)
     
+def validarMatriz(A):
+    n = A.shape[0]
+    
+    # Verificar matriz diagonal dominante
+    for i in range(n):
+        row_sum = np.sum(np.abs(A[i, :])) - np.abs(A[i, i])
+        if np.abs(A[i, i]) <= row_sum:
+            return False
+    
+    # Verificar matriz no singular
+    if np.linalg.det(A) == 0:
+        return False
+    
+    return True
+
 
 # A = matriz, B = vector independiente x0 = vector inicial para el metodo de Jacobi
 # tol = tolerancia para determinar convergencia de metodo
@@ -76,8 +101,9 @@ def jacobi(A, B, x0, tol, exactitud,max_iter=100):
     # Se copia el vector para asi poder mantener el vector inicial sin modificar en el proceso iterativo
     x = x0.copy()
     x_copy = np.zeros_like(x)
+    convergence = []  
 
-    for m in range(max_iter):
+    for iteracion in range(max_iter):
         for i in range(n):
 
             sum_term = 0
@@ -86,8 +112,8 @@ def jacobi(A, B, x0, tol, exactitud,max_iter=100):
                     sum_term += A[i, j] * x[j]
             # Se calcula el nuevo valor de la variable dividiendo la diferencia entre b[i] (el término independiente) y sum_term entre A[i, i] (el coeficiente diagonal)
             x_copy[i] = (B[i] - sum_term) / A[i, i]
-            
-        print(f"paso {m+1} -------------- aproximacion actual = {x_copy}")
+            convergence.append(x_copy.copy())
+        print(f"paso {iteracion+1} -------------- aproximacion actual = {x_copy}")
 
         # Se calcula la norma del vector de corrección x_new - x. Si esta norma es menor que la tolerancia, se considera que el método ha convergido
         # caso contrario devuelve el mensaje
@@ -97,27 +123,31 @@ def jacobi(A, B, x0, tol, exactitud,max_iter=100):
         x = x_copy.copy()
 
     print("El método de Jacobi no converge después de", max_iter, "iteraciones.")
-    return x
+    return x,(iteracion+1),convergence
 
 def solucionExacta(A,B):
     solution = np.linalg.solve(A, B)
     return solution
 
-def grafico(solution):
-        # Muestra el grafico de la solucion por pantalla
-        plt.scatter(np.arange(len(solution)),solution)
-        plt.xlabel('Componentes de un vector')
-        plt.ylabel('Solucion')
-        plt.title('puntos de la solucion en el plano')
-        plt.grid(True)
-        plt.show()
+
+def graficarConvergencia(convergencia):
+    plt.figure()
+    for i, approx in enumerate(convergencia):
+        plt.plot(np.arange(len(approx)), approx, label=f"Iteration {i+1}")
+    plt.xlabel("Componentes del vector")
+    plt.ylabel("Aproximación")
+    plt.title("Convergencia del método de Jacobi")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
 
 def main():
     presentacion()
     DATE = datosJacobi()
     limpiarConsola()
     presentacion()
-    solution_jacobi = jacobi(*DATE)
+    solution_jacobi, num_iterations, convergencia = jacobi(*DATE)
     solution_exacta = solucionExacta(*DATE[:2])
 
     print("\n\nSolucion exacta utilizando metodo distinto:")
@@ -127,9 +157,11 @@ def main():
     X = [f"x{i}" for i in range(DATE[1].shape[0])]
     print (DATE[0],"*",np.array(X),"=",DATE[1],"\n")
     print("La solucion aproximada con metodo Jacobi es:")
-    print(np.array(X),":",solution_jacobi)    
+    print(np.array(X),":",solution_jacobi)
+    print("Número de iteraciones:", num_iterations)
+
+    graficarConvergencia(convergencia)    
    
-    grafico(solution_jacobi)
-    
+        
 main()
 
