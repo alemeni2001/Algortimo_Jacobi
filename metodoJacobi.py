@@ -128,19 +128,19 @@ def jacobi(A, B, x0, tol, exactitud,max_iter=100):
         x = x_copy.copy()
 
     print("El método de Jacobi no converge después de", max_iter, "iteraciones.")
-    return  x,(iteracion+1),convergence
+    return x,(iteracion+1),convergence
 
 def solucionExacta(A,B):
     solution = np.linalg.solve(A, B)
     return solution
 
 
-def graficarConvergencia(convergencia):
-    for approx in convergencia:
-        plt.scatter(np.arange(len(approx)), approx,c="red")
+def graficarConvergencia(convergencia_y,x_values):
+    for approx in convergencia_y:
+        plt.scatter(x_values, approx,c="red")
     #grafico aproximacion final
-    aproxFinal = convergencia[-1]
-    plt.scatter(np.arange(len(aproxFinal)), aproxFinal,c="blue")
+    aproxFinal = convergencia_y[-1]
+    plt.scatter(x_values, aproxFinal,c="blue")
     plt.xlabel("Componentes del vector")
     plt.ylabel("Aproximación")
     plt.title("Convergencia del método de Jacobi")
@@ -162,7 +162,7 @@ def main():
     solution_exacta = solucionExacta(*DATE[:2])
     ##truncando solucion jacobi
     EXACTITUD = DATE[4]
-    solution_jacobi = np.around(solution_jacobi,EXACTITUD) 
+    solution_jacobi = truncar_array(solution_jacobi,EXACTITUD) 
 
     print("\n\nSolucion exacta utilizando metodo distinto:")
     print(solution_exacta)
@@ -174,7 +174,7 @@ def main():
     print(np.array(X),":",solution_jacobi)
     print("Número de iteraciones:", num_iterations)
 
-    graficarConvergencia(convergencia)    
+    graficarConvergencia(convergencia,X)    
    
         
 main()
