@@ -1,6 +1,7 @@
 # Importamos libreria numpy
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 import os
 
 def limpiarConsola():
@@ -90,6 +91,10 @@ def validarMatriz(A):
     
     return True
 
+def truncar_array(array, decimales):
+    factor = np.power(10, decimales)
+    return np.floor(array * factor) / factor
+
 
 # A = matriz, B = vector independiente x0 = vector inicial para el metodo de Jacobi
 # tol = tolerancia para determinar convergencia de metodo
@@ -112,18 +117,18 @@ def jacobi(A, B, x0, tol, exactitud,max_iter=100):
                     sum_term += A[i, j] * x[j]
             # Se calcula el nuevo valor de la variable dividiendo la diferencia entre b[i] (el término independiente) y sum_term entre A[i, i] (el coeficiente diagonal)
             x_copy[i] = (B[i] - sum_term) / A[i, i]
-            convergence.append(x_copy.copy())
-        print(f"paso {iteracion+1} -------------- aproximacion actual = {x_copy}")
+            convergence.append(x_copy.copy())  
+        print(f"\npaso {iteracion+1} -------------- aproximacion actual = {truncar_array(x_copy,exactitud)}")
 
         # Se calcula la norma del vector de corrección x_new - x. Si esta norma es menor que la tolerancia, se considera que el método ha convergido
         # caso contrario devuelve el mensaje
         if np.linalg.norm(x_copy - x) < tol:
-            return np.around(x_copy,exactitud)
+            return x_copy,(iteracion+1),convergence
         
         x = x_copy.copy()
 
     print("El método de Jacobi no converge después de", max_iter, "iteraciones.")
-    return x,(iteracion+1),convergence
+    return  x,(iteracion+1),convergence
 
 def solucionExacta(A,B):
     solution = np.linalg.solve(A, B)
@@ -131,13 +136,19 @@ def solucionExacta(A,B):
 
 
 def graficarConvergencia(convergencia):
-    plt.figure()
-    for i, approx in enumerate(convergencia):
-        plt.plot(np.arange(len(approx)), approx, label=f"Iteration {i+1}")
+    for approx in convergencia:
+        plt.scatter(np.arange(len(approx)), approx,c="red")
+    #grafico aproximacion final
+    aproxFinal = convergencia[-1]
+    plt.scatter(np.arange(len(aproxFinal)), aproxFinal,c="blue")
     plt.xlabel("Componentes del vector")
     plt.ylabel("Aproximación")
     plt.title("Convergencia del método de Jacobi")
-    plt.legend()
+    #configuracion de la leyenda
+    config_intermedias = Patch(color='red', label='Aproximaciones intermedias')
+    config_final = Patch(color='blue', label='Aproximación final')
+    # Agregar leyendas personalizadas
+    plt.legend(handles=[config_intermedias, config_final])
     plt.grid(True)
     plt.show()
 
@@ -149,6 +160,9 @@ def main():
     presentacion()
     solution_jacobi, num_iterations, convergencia = jacobi(*DATE)
     solution_exacta = solucionExacta(*DATE[:2])
+    ##truncando solucion jacobi
+    EXACTITUD = DATE[4]
+    solution_jacobi = np.around(solution_jacobi,EXACTITUD) 
 
     print("\n\nSolucion exacta utilizando metodo distinto:")
     print(solution_exacta)
