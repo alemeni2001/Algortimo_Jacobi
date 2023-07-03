@@ -79,12 +79,13 @@ def datosJacobi():
 def validarMatriz(A):
     n = A.shape[0]
     
-    # Verificar matriz diagonal dominante
-    for i in range(n):
-        row_sum = np.sum(np.abs(A[i, :])) - np.abs(A[i, i])
-        if np.abs(A[i, i]) <= row_sum:
-            return False
+    # Verificar matriz diagonal dominantediagonales = np.diag(np.abs(matriz))  # Obtiene los valores de la diagonal principal de la matriz
+    diagonales = np.diag(np.abs(A))
+    sumas_filas = np.sum(np.abs(A), axis=1) - diagonales  # Calcula la suma de los valores absolutos de cada fila, sin incluir la diagonal principal
     
+    if np.all(diagonales > sumas_filas):
+        return False
+         
     # Verificar matriz no singular
     if np.linalg.det(A) == 0:
         return False
@@ -100,7 +101,7 @@ def truncar_array(array, decimales):
 # tol = tolerancia para determinar convergencia de metodo
 #exactitud = cantidad de decimales correctos
 # max_iter = Número máximo de iteraciones permitidas 
-def jacobi(A, B, x0, tol, exactitud,max_iter=100):
+def jacobi(A, B, x0, tol, exactitud,max_iter=500):
     # Se determina el tamaño del vector para que este sea recorrido en el ciclo for
     n = len(B)
     # Se copia el vector para asi poder mantener el vector inicial sin modificar en el proceso iterativo
